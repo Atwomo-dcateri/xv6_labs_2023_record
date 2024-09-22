@@ -3,5 +3,9 @@
     "cSpell.enableFiletypes": [
         "arm"
     ],
+    "files.associations": {
+        "stat.h": "c",
+        "user.h": "c"
+    },
     
 }
