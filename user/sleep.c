@@ -1,13 +1,25 @@
 #include "kernel/types.h"
 #include "user/user.h"
+//#include "user/ulib.c"
 
-int main(int argc, char *argv[]) {
-  if (argc != 2) {
-    fprintf(2, "Usage: sleep [second]\n");
-    exit(1);
-  }
+int main(int argc, char *args[]){
 
-  sleep(atoi(argv[1]));
+    if (argc < 2)
+    {
+        printf("Please input sleep time\n");
+        exit(1);
+    };
+    int s_time = 0;
 
-  exit(0);
+    s_time = atoi(args[1]); 
+    if (s_time < 0)
+    {
+        printf("Please input crroet time!\n");
+        exit(1);
+    };
+    
+    sleep(s_time);
+    exit(0);
+
 }
+

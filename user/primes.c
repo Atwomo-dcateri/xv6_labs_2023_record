@@ -1,64 +1,65 @@
-#include "kernel/types.h"
 #include "user/user.h"
+//#include "stdio.h"
 
-#define READ_END 0
-#define WRITE_END 1
+int main(int argc, char const *argv[])
+{
+    /* code */
+    int p[3];
+    pipe(p);
+    int array[35];
 
-void do_prime_sieve(int oldChan[2]) {
-  int p, n;
-  int newChan[2];
-
-  /* `oldChan` is inhedited from its parent, just read from the pipe. */
-  close(oldChan[WRITE_END]);
-  /* nothing in the pipe */
-  if (read(oldChan[READ_END], &p, 4) == 0) {
-    close(oldChan[READ_END]);
-    return;
-  }
-  printf("prime %d\n", p);
-
-  if (pipe(newChan) < 0) {
-    fprintf(2, "pipe failed\n");
-    exit(1);
-  }
-
-  /* create a new child as its right neighbour */
-  if (fork() == 0) {
-    // child
-    do_prime_sieve(newChan);
-  } else {
-    // parent
-    close(newChan[READ_END]);
-    while (read(oldChan[READ_END], &n, 4) != 0) {
-      if (n % p != 0) {
-        write(newChan[WRITE_END], &n, 4);
-      }
+    close(p[0]);
+    close(p[1]);
+    close(p[2]);
+    close(0);
+    for (int i = 0; i < 35; i++)
+    {
+        array[i] = i + 2;
+        
     }
-    /* close all holding pipes after use */
-    close(oldChan[READ_END]);
-    close(newChan[WRITE_END]);
-  }
-}
+    //printf("%d", array[0]);
+    int pid1 = fork();
 
-int main(int argc, char *argv[]) {
-  int oldChan[2];
-  if (pipe(oldChan) < 0) {
-    fprintf(2, "pipe failed\n");
-    exit(1);
-  }
+    if (pid1 == 0)
+    {   
+        close(p[1]);
+        close(p[2]);
+        //close(p[0]);
+    
+        printf("primes: %d \n", array[0]);
+        for (int i = 1; i <= 33; i++)
+        {   
+            
+            if (array[i]%array[0] == 0)
+            {
+                
+            } else {
 
-  if (fork() == 0) {
-    // child
-    do_prime_sieve(oldChan);
-  } else {
-    // parenet
-    close(oldChan[READ_END]);
-    for (int i = 2; i <= 35; ++i) {
-      write(oldChan[WRITE_END], &i, 4);
+                write(p[0], &array[i], 2);
+            }
+            close(p[0]);
+        }
+        //exit(0);        
     }
-    close(oldChan[WRITE_END]);
-  }
+    
+    int pid2 = fork();
 
-  wait((void *)0);
-  exit(0);
+    if (pid2 == 0){
+        int a = 45;
+        close(p[0]);
+        //close(p[1]);
+        close(p[2]);
+        while (a != 0)
+        {   int i = 0;
+            a = read(p[1], &array[i], 2);
+            i++;
+        }
+        
+        wait(&pid1);
+        printf("primes: %d \n", array[0]);
+        close(p[1]);
+        exit(0);
+    }
+    wait(&pid2);
+    return 0;
 }
