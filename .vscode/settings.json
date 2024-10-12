@@ -5,7 +5,17 @@
     ],
     "files.associations": {
         "stat.h": "c",
-        "user.h": "c"
+        "user.h": "c",
+        "fs.h": "c",
+        "types.h": "c",
+        "typeinfo": "c"
     },
+    "C_Cpp.errorSquiggles": "enabled",
+    "C_Cpp.autoAddFileAssociations": true,
+    "C_Cpp.autocompleteAddParentheses": true,
+    "C_Cpp.suggestSnippets": true,
+    "markcode": {
+        "enable": true
+    }
     
 }

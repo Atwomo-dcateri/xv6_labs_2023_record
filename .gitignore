@@ -5,6 +5,10 @@ _*
 *.asm
 *.sym
 *.img
+a
+b
+b/a
+barrier
 vectors.S
 bootblock
 entryother

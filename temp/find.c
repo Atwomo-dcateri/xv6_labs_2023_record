@@ -42,7 +42,7 @@ void find(char *path, char *name) {
 
     memmove(buf, path, strlen(path));
     memmove(buf + strlen(path), de.name, strlen(de.name));
-    len = strlen(path) + strlen(de.name);
+    len =strlen(path) + strlen(de.name);
     if (buf[len - 1] != '/') {
       buf[len] = '/';
       buf[len + 1] = '\0';
@@ -63,7 +63,7 @@ int main(int argc, char *argv[]) {
   if (argc != 3) {
     fprintf(2, "Usage: find [dir] [filename]\n");
     exit(1);
-  }
+  } 
 
   pathname = argv[1];
   pathlen = strlen(pathname);

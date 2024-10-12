@@ -6,13 +6,23 @@
         # push all registers, call kerneltrap().
         # when kerneltrap() returns, restore registers, return.
         #
+
+ #这两行代码声明了两个全局符号 `kerneltrap` 和 `kernelvec`
+ #，这意味着它们可以被其他文件中的代码引用。
+
+# 2. **对齐指令**： 
+#```arm
+#.align 4
+       
 .globl kerneltrap
 .globl kernelvec
 .align 4
+#这是一个标签，标记了向量表的入口点。在 RISC-V 架构中，向量表是一个中断处理程序的入口点列表。
 kernelvec:
         # make room to save registers.
         addi sp, sp, -256
-
+# 将栈指针 sp 减去 256 来为保存寄存器腾出空间，然后将当前寄存器的
+# 值保存到栈上。这样做是为了在处理中断时保护当前的寄存器状态。
         # save the registers.
         sd ra, 0(sp)
         sd sp, 8(sp)
@@ -120,5 +130,5 @@ timervec:
         ld a2, 8(a0)
         ld a1, 0(a0)
         csrrw a0, mscratch, a0
-
+        
         mret
