@@ -1,76 +1,57 @@
+#include "kernel/types.h"
 #include "user/user.h"
 
-/*int main(int argc, char const *argv[])
-{   
-    
-    int pid1 = fork();
-    int* pid2 = &pid1;
-    
-    if (pid1 == 0)
-    {   
-        int p1 = getpid();
-        printf("%d: received ping\n", p1);
-        exit(0);
-    }
-    if (pid1 > 0)
-    {   
-        wait(pid2);
-        int p2 = getpid();
+#define READ_END 0
+#define WRITE_END 1
 
-        printf("%d: received pong\n", p2);
-    }
-    
-    if (pid1 < 0)
-    {
-        printf("fork error!");
-    }
-    
-    return 0;
-}*/
+int main(int argc, char *argv[]) {
+  int p2c[2], c2p[2];
+  char *c;
 
-int main(int argc, char const *argv[])
-{
-    /* code */
-    int p[2];
-    char *args[2];
-    args[0] = "received ping\n";
-    args[1] = "received pong\n";
-    pipe(p);
+  if (pipe(p2c) < 0) {
+    fprintf(2, "pipe failed\n");
+    exit(1);
+  }
 
-    int pid1 = fork();
+  if (pipe(c2p) < 0) {
+    fprintf(2, "pipe failed\n");
+    exit(1);
+  }
 
-    if (pid1 == 0)
-    {   
-        int fd1 = dup(p[1]);
-        // close(p[0]);
-        //hello world\n
-        //close(p[1]);
-        close(0);
-        int p1 = getpid();
-        write(p[0], args[1], 1);
-        close(p[1]);
-        close(p[0]);
-        read(fd1, args[0], 14);
-        printf("%d: %s", p1, args[0]);
-        close(fd1);
+  if (fork() == 0) {
+    // child
+    close(p2c[WRITE_END]); // close the write end of 'parent to child' pipe
+    close(c2p[READ_END]);
+
+    if (read(p2c[READ_END], &c, 1) != 1) {
+      fprintf(2, "read failed\n");
+      exit(1);
     }
-    if (pid1 > 0)
-    {   
-        close(0);
-        // dup(p[1]);
-        // close(p[0]);
-        int p2 = getpid();
-        read(p[1], args[1], 14);
-        close(p[1]);
-        write(p[0], args[0], 14);
-        wait(&pid1);
-        printf("%d: %s", p2, args[1]);
-        close(p[0]);
-       
+
+    printf("%d: received ping\n", getpid());
+    if (write(c2p[WRITE_END], c, 1) != 1) {
+      fprintf(2, "write failed\n");
+      exit(1);
     }
-    if (pid1 < 0)
-    {
-        printf("fork error!");
-    }
-    return 0;
+
+    exit(0);
+  }
+
+  // parent
+  close(p2c[READ_END]);
+  close(c2p[WRITE_END]);
+
+  c = "?";
+  if (write(p2c[WRITE_END], c, 1) != 1) {
+    fprintf(2, "write failed\n");
+    exit(1);
+  }
+
+  if (read(c2p[READ_END], &c, 1) != 1) {
+    fprintf(2, "read failed\n");
+    exit(1);
+  }
+  printf("%d: received pong\n", getpid());
+
+  exit(0);
 }

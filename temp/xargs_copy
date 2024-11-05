@@ -1,0 +1,79 @@
+int count_n = 0;
+        char *p;
+        p = buffer;
+        int i = 0;
+        for (; *p !='\0'; p++)
+        {
+            if (*p == '\n') {
+                printf("%s ",argc[2]);
+                for(; i < count_n; i++)
+                {
+                    if (buffer[i] == '\n')
+                        continue;
+                    printf("%c", buffer[i]);
+
+                }
+                i = count_n;
+                printf("\n");
+            }
+            count_n++;
+}
+
+// #define MAXLEN 512
+
+// char buffer[MAXLEN];
+
+// int main(int args, char *argc[]) {
+//     if (args < 2) {
+//         printf("Invalid xargs value!\n");
+//         return 1;
+//     }
+    
+//     char *p = buffer;
+//     char *argcs[MAXLEN] = {NULL};
+//     int index = 0;
+//     char temp_array[MAXLEN] = {0};
+//     int read_byte = 0;
+
+//     // 设置初始参数
+//     for (int i = 1; i < args; i++) {
+//         argcs[index++] = argc[i];
+//     }
+
+//     // 读取输入到 buffer
+//     while ((read_byte = read(0, p, 1)) > 0 ) {
+//         p += read_byte;
+//     }
+//     *p = '\0';  // 结束符
+
+//     // 添加 NULL 结尾到参数数组
+//     argcs[index] = temp_array;
+//     argcs[index + 1] = NULL;
+
+//     // 重置 p 指向 buffer 开头
+//     p = buffer;
+//     int index1 = 0;
+//     for (; *p != '\0'; p++) {
+//         if (*p == '\n') {
+//             temp_array[index1] = '\0';  // 当前行结束
+//             if (fork() == 0) {
+//                 exec(argc[1], argcs);
+//                 //perror("exec failed");  // 如果 exec 出错
+//                 //exit(1);
+//             }
+//             wait(0);  // 等待子进程结束
+//             index1 = 0;  // 重置 temp_array 索引
+//         } else {
+
+//             if (index1 >= MAXLEN - 1) {
+//                 fprintf(0, "Input exceeds buffer size.\n");
+//                 exit(1);
+//             }
+//             temp_array[index1++] = *p;
+//         }
+//     }
+    
+//     return 0;
+// }
+
+

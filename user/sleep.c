@@ -17,7 +17,7 @@ int main(int argc, char *args[]){
         printf("Please input crroet time!\n");
         exit(1);
     };
-    
+
     sleep(s_time);
     exit(0);
 

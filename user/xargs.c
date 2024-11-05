@@ -2,38 +2,82 @@
 #include "user/user.h"
 #include "kernel/param.h"
 
-#define STDIN 0
 
-#define BUFFER_SIZE 512
+#define NULL '\0'
 
-int main(int argc, char *argv[]) {
-  char buf[BUFFER_SIZE];
-  char *newargv[MAXARG];
-  int i = 0, j;
+#define MAXLEN 512
+    
+char buffer[512];
 
-  if (argc < 2) {
-    fprintf(2, "Usage: xargs [options] [command [initial-arguments]]\n");
-    exit(1);
-  }
-
-  while (read(STDIN, &buf[i], 1) != 0) {
-    if (buf[i] == '\n') {
-      buf[i] = '\0';
-      i = 0;
-      for (j = 0; j + 1 < argc; j++) {
-        newargv[j] = argv[j + 1];
-      }
-      newargv[j++] = buf;
-      newargv[j] = (void *)0;
-
-      if (fork() == 0) {
-        exec(argv[1], newargv);
-      } else {
-        wait((void *)0);
-      }
-    } else {
-      ++i;
+void main(int args, char *argc[]) {
+    
+    if (args < 2)
+    {
+        printf("Invaild xargs value! \n");
     }
-  }
-  exit(0);
+    
+    
+    //if (fork() == 0) {
+        
+        char *p;
+        p = buffer;
+        char *argcs[MAXARG] =  {"\0"};
+        int index = 0;
+        char temp_array[MAXLEN] = {"\0"};
+        //int read_byte = 0;
+
+        int n = 0 ;
+        for(int i = 1;i < args; i++)
+            argcs[index++] = argc[i];
+        
+        
+        //p = buffer;
+        //argcs[index] = temp_array;
+        //argcs[index + 1] = NULL;
+        //
+
+        // for (int i = 0; i < strlen(buffer); i++)
+        // {
+        //     printf("%c", buffer[i]);//打印的是字符而非字符串
+        // }
+        int index1 = 0;
+        while ((n = read(0, buffer, MAXLEN)) != 0){
+        //printf("%d", strlen(buffer));
+        argcs[index] = temp_array;
+        for (; *p != '\0'; p++) {//为什么会越界
+       
+            if (*p == '\n') {
+                
+        // for(int i = 0; i < strlen(buffer); ++i){
+
+        //     //index1++;
+        //     if (buffer[i] == '\n')
+        //     {
+             
+                if(fork() == 0) {
+
+                    exec(argc[1], argcs);
+                }
+                wait(0);
+                
+            } else {
+              
+                if (index1 > MAXLEN - 1)
+                {
+                   fprintf(0,"Input exceed buffer size.\n");
+                   exit(0);
+                }
+                
+                //temp_array[i] = buffer[i];
+                temp_array[index1] = buffer[index1];
+                index1++;
+            }
+        }
+    };
+    exit(0);   
 }
+    
+   
+
+/*echo hello world\n | xargs echo bye*/
+//acgfun.net
